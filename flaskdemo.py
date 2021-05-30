@@ -28,7 +28,8 @@ def search():
 def results():
     search_term = session['search_term']
     page = get_page(search_term)
-    return render_template("results.html", page=page)
+    title = page.title
+    return render_template("results.html", page=page), '<h1>{}</h1>'.format(title)
 
 
 def get_page(search_term):
@@ -47,6 +48,14 @@ def get_page(search_term):
             title = page_titles[1]
         page = get_page(wikipedia.page(title))
     return page
+
+
+@app.route('/search', methods=['POST', 'GET'])
+def get_title(search_term):
+    if request.method == 'POST':
+        search_term = session['search_term']
+        title = get_page(search_term).title
+        return '<h1>{}</h1>'.format(title)
 
 
 if __name__ == '__main__':
